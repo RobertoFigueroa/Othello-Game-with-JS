@@ -1,59 +1,49 @@
-
-const renderLuz = ({
-    color,
-    size = 200,
-    isTurnedOn = false,
-}) => {
-    const luz = document.createElement('div');
-    luz.style.width = `${size}px`;
-    luz.style.height = `${size}px`;
-    luz.style.borderRadius = `${size / 2}px`;
-    luz.style.backgroundColor = color;
-    luz.style.opacity = isTurnedOn ? 1.0 : 0.25;
-    return luz;
+// coordinate init 
+//TODO
+const coordinates = [];
+let xIndex = 0;
+for(var i = 0; i<64; i++){
+    if(i % 8 === 0 & i != 0){
+        xIndex += 1;
+    }
+    coordinates.push({x:xIndex, y:i%8});
 }
 
 
-const render = (mount, state) => {
-    const { turnedOnIndex } = state;
-
-    const semaforo = document.createElement('div');
-    semaforo.style.backgroundColor = 'black';
-    semaforo.style.width = '200px';
-    semaforo.style.padding = '25px';
-    [
-        'red',
-        'yellow',
-        'green'
-    ].map(
-        (color, index) => renderLuz({
-            color,
-            isTurnedOn: index === turnedOnIndex,
-        }),
-    ).forEach(
-        luz => semaforo.appendChild(luz),
-    );
-
-    const boton = document.createElement('button');
-    boton.style.width = '250px';
-    boton.style.fontSize = '20px';
-    boton.innerText = 'Siguiente';
-
-    boton.onclick = () => {
-        state.turnedOnIndex = (state.turnedOnIndex + 1) % 3;
-        root.innerHTML = '';
-        render(root, state);
-    };
-
-    mount.appendChild(semaforo);
-    mount.appendChild(boton);
-};
-
-
-const APP_STATE = {
-    turnedOnIndex: 1,
-};
-
 const root = document.getElementById('root');
+const board = document.createElement('div');
+board.style.height = '816px';
+board.style.width = '816px';
+board.style.display = 'flex';
+board.style.flexDirection = 'row';
+board.style.flexWrap = 'wrap';
+board.style.backgroundColor = 'black';
+root.appendChild(board);
 
-render(root, APP_STATE);
+const renderCoin = (color) => {
+    const coin = document.createElement('div');
+    coin.style.width = "100px";
+    coin.style.height = "100px";
+    coin.style.borderRadius = "50px";
+    coin.style.backgroundColor = color;
+    return coin;
+
+};  
+
+const renderCell = ({x , y}) => {
+    const cell = document.createElement('div');
+    cell.style.width = "100px";
+    cell.style.height = "100px";
+    cell.style.backgroundColor = "gray";
+    cell.style.border = '1px solid black';
+    cell.className = `${x}-${y}`;
+    return cell;
+
+};
+
+coordinates.map((val) => {
+    board.appendChild(renderCell(val));
+});
+
+
+
