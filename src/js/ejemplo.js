@@ -1,4 +1,3 @@
-
 function sayHello() {
     alert("Hola amigos");
 }
