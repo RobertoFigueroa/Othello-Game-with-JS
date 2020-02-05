@@ -20,7 +20,7 @@ const renderLuz = ({
 
 
 const render = (mount, state) => {
-    const { turnedOnIndex } = state;
+    const { turnedOnIndex } = state; //que rashos hizo aquí este brocal?
 
     const semaforo = document.createElement('div');
     semaforo.style.backgroundColor = 'black';
@@ -43,6 +43,9 @@ const render = (mount, state) => {
     luz.style.backgroundColor = color;
     luz.style.opacity = isTurnedOn ? 1.0 : 0.25;
     luz.className = color;
+    luz.onclick = (elm) => {
+        console.log(elm.target);
+    }
     return luz;
 }) => renderLuz({
             color,
@@ -73,5 +76,4 @@ const APP_STATE = {
 };
 
 const root = document.getElementById('root');
-
 render(root, APP_STATE);
