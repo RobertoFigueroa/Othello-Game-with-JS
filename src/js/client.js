@@ -1,31 +1,80 @@
 // coordinate init 
 
-function checkHorizontal(app_state){
-    app_state.coordinates.map((val, i) => {
-        let intial = false;
-        let end = false;
-        const elementsToChange = []
-        val.map((hVal,j) => {
-            if(hVal != app_state.turnValue){
-                elementsToChange.push([i,j]);
-            }
-            else {
-                if(intial == false){
-                    intial = true;
-                }
-                else {
-                    end = true;
-                }
-            }
-        });
-        elementsToChange.map((listVal, x) =>{
-            listVal.map ((coinVal, y) =>{
-                app_state.coordinates[x][y] = app_state.turnValue;
-            });
-        });
-    });
+function checkHorizontal(yPosition,xPosition, coord, turn, step){
+    const offset = xPosition + step;
+    if(coord[yPosition][offset] === turn){
+        return offset;
+    }
+    else if (xPosition > 7) {
+        return -1;
+    }
+    else if(xPosition < 0){
+        return -1;
+    }
+    else {
+        return checkHorizontal(yPosition,offset, coord, turn, step);
+    }
 
 }
+
+function checkVertical(yPosition,xPosition, coord, turn, step){
+    const offset = yPosition + step;
+    console.log(typeof(turn));
+    if(offset > 7){
+        return -1;
+    }
+    if(offset < 0){
+        return -1;
+    }
+    if(coord[offset][xPosition] === turn){
+        return offset;
+      }
+    else {
+        return checkVertical(offset,xPosition, coord, turn, step)
+    }
+    
+}
+
+function checkDiagonalLR(yPosition,xPosition, coord, turn, step){
+    const xOffset = yPosition + step;
+    const yOffset = xPosition + step;
+    if(xOffset < 0 || yOffset < 0){
+        return -1;
+    }
+    if(xOffset > 7 || yOffset > 7){
+        return -1;
+    }
+    if(coord[yOffset][xOffset] === turn){
+        return [yOffset, xOffset];
+    }
+    else {
+        return checkDiagonalLR(yOffset,xOffset, coord, turn, step);
+    }
+
+}
+
+function checkDiagonalRL(yPosition,xPosition, coord, turn, step){
+    const xOffset = yPosition + step;
+    const yOffset = xPosition + (step * -1);
+    console.log(yOffset , xOffset);
+    if(xOffset < 0 || yOffset < 0){
+        return -1;
+    }
+    if(xOffset > 7 || yOffset > 7){
+        return -1;
+    }
+    if(coord[yOffset][xOffset] === turn){
+        return [yOffset, xOffset];
+    }
+    else {
+        return checkDiagonalRL(yOffset,xOffset, coord, turn, step);
+    }
+
+}
+
+
+
+
 
 const renderCoin = (colorValue) => {
     const coin = document.createElement('div');
@@ -74,19 +123,33 @@ const render = (mount, state) => {
 
     root.onclick = (elm) => {
         const placeWhereClick = elm.originalTarget.parentElement.className;
-        console.log(state.coordinates);
         state.turnValue = state.turnValue * -1;
         state.coordinates[placeWhereClick[0]][placeWhereClick[2]] = state.coordinates[placeWhereClick[0]][placeWhereClick[2]] === 0 ? state.turnValue : state.coordinates[placeWhereClick[0]][placeWhereClick[2]];
-        checkHorizontal(APP_STATE);
+        const right = checkHorizontal(parseInt(placeWhereClick[0]),parseInt(placeWhereClick[2]),state.coordinates,state.turnValue,1);
+        const left = checkHorizontal(parseInt(placeWhereClick[0]),parseInt(placeWhereClick[2]),state.coordinates,state.turnValue,-1);
+        const up = checkVertical(parseInt(placeWhereClick[0]),parseInt(placeWhereClick[2]),state.coordinates,state.turnValue,1);
+        const down = checkVertical(parseInt(placeWhereClick[0]),parseInt(placeWhereClick[2]),state.coordinates,state.turnValue,-1);
+        const diagonalUpLR = checkDiagonalLR(parseInt(placeWhereClick[0]),parseInt(placeWhereClick[2]),state.coordinates,state.turnValue,-1);
+        const diagonalDownLR = checkDiagonalLR(parseInt(placeWhereClick[0]),parseInt(placeWhereClick[2]),state.coordinates,state.turnValue,1);
+        const diagonalUpRL = checkDiagonalRL(parseInt(placeWhereClick[0]),parseInt(placeWhereClick[2]),state.coordinates,state.turnValue,1);
+        const diagonalDownRl = checkDiagonalRL(parseInt(placeWhereClick[0]),parseInt(placeWhereClick[2]),state.coordinates,state.turnValue,-1);
+        // console.log(right);
+        // console.log(left);
+        // console.log(up);
+        // console.log(down);
+        // console.log(diagonalUpLR);
+        // console.log(diagonalDownLR);
+        console.log(diagonalUpRL);
+        // console.log(diagonalDownRl);
         root.innerHTML = '';
         render(root,APP_STATE);
     };
-    
+
 
 };
 
 const APP_STATE = {
-    turnValue : -1,
+    turnValue : 1,
     coordinates : [
         [0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0],
@@ -101,6 +164,9 @@ const APP_STATE = {
 
 const root = document.getElementById('root');
 render (root, APP_STATE);
+
+
+
 
 
 
