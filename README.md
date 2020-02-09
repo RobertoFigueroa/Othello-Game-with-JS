@@ -1,5 +1,6 @@
 #Othello-Game
 
+
 This is a practice for learn more about JS and render functions. 
 
 The game called Othello is an stragy game which you have to find out the way to collect or shift the most coins you can with some rules.
@@ -16,4 +17,4 @@ src/img/movement1.png
 
 - [x] The player with the most discs on the board at the end of the game wins. If both players have the same number of discs, then the game is a draw. 
 
-src/img/Winner.png
+![alt winner][https://github.com/RobertoFigueroa/Othello-Game-with-JS/blob/master/src/img/Winner.png]
