@@ -1,6 +1,7 @@
 // coordinate init 
 
 import range from 'lodash/range';
+import flattenDeep from 'lodash/flattenDeep'
 
 function checkHorizontal(yPosition,xPosition, coord, turn, step){
     const offset = xPosition + step;
@@ -100,6 +101,34 @@ const renderCell = ({
 const render = (mount, state) => {
     const {turnValue} = state;
     
+    //title creation and status items
+    
+    const title = document.createElement('h1');
+    title.innerText = "Othello Game";
+    title.style.margin =  '0px';
+    const status = document.createElement('h2');
+    status.innerText = state.turnValue  === -1 ? "Turno Jugador 1" : "Turno Jugador 2";
+    status.style.margin = '0px';
+    status.style.display = "flex";
+    status.style.alignItems = "baseline";  
+    const turnCoin = renderCoin(turnValue);
+    turnCoin.style.height = '10px';
+    turnCoin.style.width = '10px';
+    turnCoin.style.borderRadius = '10px';
+    turnCoin.style.border = '1px solid black';
+    turnCoin.style.margin = '5px';
+    status.appendChild(turnCoin);
+    mount.appendChild(title);
+    mount.appendChild(status);
+    const whiteCoins = flattenDeep(state.coordinates).filter(x => x === 1).length; 
+    const blackCoins = flattenDeep(state.coordinates).filter(x => x === -1).length; 
+    const statusWhite = document.createElement('div');
+    const statusBlack = document.createElement('div');
+    statusWhite.innerText ="White Coins: " + whiteCoins;
+    statusBlack.innerText = "Black Coins: " + blackCoins;
+    mount.append(statusWhite);
+    mount.append(statusBlack);
+
     //board creation
     const board = document.createElement('div');
     board.style.height = '816px';
@@ -121,7 +150,6 @@ const render = (mount, state) => {
 
     root.onclick = (elm) => {
         const placeWhereClick = elm.originalTarget.parentElement.className;
-        
         state.coordinates[placeWhereClick[0]][placeWhereClick[2]] = state.coordinates[placeWhereClick[0]][placeWhereClick[2]] === 0 ? state.turnValue : state.coordinates[placeWhereClick[0]][placeWhereClick[2]];
         const right = checkHorizontal(parseInt(placeWhereClick[0]),parseInt(placeWhereClick[2]),state.coordinates,state.turnValue,1);
         const left = checkHorizontal(parseInt(placeWhereClick[0]),parseInt(placeWhereClick[2]),state.coordinates,state.turnValue,-1);
@@ -132,6 +160,8 @@ const render = (mount, state) => {
         const diagonalUpRL = checkDiagonalRL(parseInt(placeWhereClick[0]),parseInt(placeWhereClick[2]),state.coordinates,state.turnValue,1);
         const diagonalDownRl = checkDiagonalRL(parseInt(placeWhereClick[0]),parseInt(placeWhereClick[2]),state.coordinates,state.turnValue,-1);
         console.log("turnp de: " , turnValue);
+
+
 
         //shift right coins
         if(right != -1){
@@ -227,6 +257,16 @@ const render = (mount, state) => {
             }); 
         }
 
+        const winner = flattenDeep(state.coordinates).filter(x => x === 0).length; 
+        if(winner == 0){
+            if(flattenDeep(state.coordinates).filter(x => x === 1).length < flattenDeep(state.coordinates).filter(x => x === -1).length){
+                alert("Gano Jugador 1 (Fichas Negras)");
+            }
+            else {
+                alert("Gano Jugador 2 (Fichas Blancas)");
+            }
+        }
+
         state.turnValue = state.turnValue * -1;
         root.innerHTML = '';
         render(root,APP_STATE);
@@ -250,6 +290,8 @@ const APP_STATE = {
 }
 
 const root = document.getElementById('root');
+root.style.display = 'flex';
+root.style.flexDirection = 'column';
 render (root, APP_STATE);
 
 
