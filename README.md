@@ -17,4 +17,4 @@ src/img/movement1.png
 
 - [x] The player with the most discs on the board at the end of the game wins. If both players have the same number of discs, then the game is a draw. 
 
-![alt winner][https://github.com/RobertoFigueroa/Othello-Game-with-JS/blob/master/src/img/Winner.png]
+![alt winner](https://github.com/RobertoFigueroa/Othello-Game-with-JS/blob/master/src/img/Winner.png)
